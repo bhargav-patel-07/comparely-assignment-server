@@ -1,0 +1,47 @@
+[
+    {
+        "timestamp": "2025-10-03T19:36:31.334495",
+        "area": "400001",
+        "store_id": "BLK_MUM_101",
+        "product": "Mango Oatmeal",
+        "stock_status": "full",
+        "stock_count": 75,
+        "price": 199.0
+    },
+    {
+        "timestamp": "2025-10-03T19:36:33.448534",
+        "area": "400001",
+        "store_id": "BLK_MUM_102",
+        "product": "Mango Oatmeal",
+        "stock_status": "OOS",
+        "stock_count": 0,
+        "price": 199.0
+    },
+    {
+        "timestamp": "2025-10-03T19:36:35.703440",
+        "area": "201301",
+        "store_id": "BLK_NOI_201",
+        "product": "Mango Oatmeal",
+        "stock_status": "full",
+        "stock_count": 55,
+        "price": 199.0
+    },
+    {
+        "timestamp": "2025-10-03T19:36:37.213883",
+        "area": "201301",
+        "store_id": "BLK_NOI_202",
+        "product": "Mango Oatmeal",
+        "stock_status": "low",
+        "stock_count": 7,
+        "price": 199.0
+    },
+    {
+        "timestamp": "2025-10-03T19:36:39.593251",
+        "area": "201301",
+        "store_id": "BLK_NOI_203",
+        "product": "Mango Oatmeal",
+        "stock_status": "full",
+        "stock_count": 83,
+        "price": 199.0
+    }
+]
