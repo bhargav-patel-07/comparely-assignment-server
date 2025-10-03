@@ -71,7 +71,7 @@ numpy==2.2.1
 openai==1.95.0
 overrides==7.7.0
 packaging==24.2
-pandas==2.2.3
+pandas==2.1.4
 pandocfilters==1.5.1
 parso==0.8.4
 pillow==11.1.0
@@ -79,7 +79,7 @@ platformdirs==4.3.8
 prometheus_client==0.22.1
 prompt_toolkit==3.0.51
 psutil==7.0.0
-psycopg2-binary==2.9.10
+psycopg2-binary==2.9.9
 pure_eval==0.2.3
 pybind11==2.13.6
 pycparser==2.22
@@ -124,4 +124,5 @@ webcolors==24.11.1
 webencodings==0.5.1
 websocket-client==1.8.0
 Werkzeug==3.1.3
+
 
