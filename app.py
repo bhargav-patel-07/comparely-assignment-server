@@ -1,32 +1,53 @@
 import json
 import pandas as pd
 import psycopg2
+import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS 
+from urllib.parse import urlparse
 
-# --- Configuration ---
-# !!! IMPORTANT: Update these with your PostgreSQL credentials !!!
+DATABASE_URL = os.environ.get("DATABASE_URL") 
+
 DB_CONFIG = {
-    "dbname": "comparely_db",
-    "user": "postgres",
-    "password": "bhargav0710",
-    "host": "localhost",
-    "port": "5432"
+    "dbname": os.environ.get("DB_NAME", "comparely_db"),
+    "user": os.environ.get("DB_USER", "api_user"),
+    "password": os.environ.get("DB_PASS", "bhargav0710"),
+    "host": os.environ.get("DB_HOST", "dpg-d3fv40vdiees73bhbgdg-a"),
+    "port": os.environ.get("DB_PORT", "5432")
 }
+
 DAILY_SALES_GUESS = 10 # Used for DOI calculation
 OOS_ALERT_THRESHOLD_DAYS = 3 # DOI threshold for flagging
 
 app = Flask(__name__)
-CORS(app) # Enable CORS for React front-end (Part 3)
+CORS(app) # Enable CORS for React front-end
 
 def get_db_connection():
-    """Connects to the PostgreSQL database."""
-    return psycopg2.connect(**DB_CONFIG)
+    """
+    Connects to the PostgreSQL database.
+    Prioritizes the full DATABASE_URL (for Render deployment).
+    """
+    if DATABASE_URL:
+        # Parse the full URL string for psycopg2 connection parameters
+        url = urlparse(DATABASE_URL)
+        return psycopg2.connect(
+            database=url.path[1:],
+            user=url.username,
+            password=url.password,
+            host=url.hostname,
+            port=url.port,
+            sslmode='require' # IMPORTANT: Render connections require SSL
+        )
+    else:
+        # Fallback for local connection using DB_CONFIG
+        print("⚠️ Warning: Using local DB_CONFIG, ensure environment variables are set for production.")
+        return psycopg2.connect(**DB_CONFIG)
 
 def etl_process():
     """Reads data from JSON, transforms it (DOI, Alert), and loads to DB."""
     try:
         # T: Transform Phase (DOI and Alert Flagging)
+        # Using 'stock_data.json' should be fine as long as it's in the same directory
         with open("stock_data.json", 'r') as f:
             data = json.load(f)
         
@@ -67,7 +88,8 @@ def etl_process():
     except FileNotFoundError:
         return "🚨 Error: stock_data.json not found. Run the scraper first."
     except psycopg2.OperationalError as e:
-        return f"🚨 Database Connection Error: Check DB_CONFIG and ensure PostgreSQL is running. Details: {e}"
+        # This will now include the full connection string details if DATABASE_URL is used
+        return f"🚨 Database Connection Error: Check DB configuration. Details: {e}"
     except Exception as e:
         return f"🚨 ETL Error: {e}"
 
@@ -84,7 +106,6 @@ def get_stock_summary():
     """
     API endpoint: /api/stock?area=400001
     Pulls the latest aggregated alert data for a specific area.
-    (Required format for the prompt's example output)
     """
     area_code = request.args.get('area')
     if not area_code:
@@ -141,7 +162,6 @@ def get_stores_by_area():
     """
     API endpoint: /api/stores?area=400001
     Gets all stores for a given area with their latest product details.
-    (Needed for the table display in Part 3)
     """
     area_code = request.args.get('area')
     if not area_code:
